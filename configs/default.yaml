@@ -1,0 +1,87 @@
+# =============================================================================
+# SAE Interpretability of Kronos -- Default Configuration
+# =============================================================================
+# All hyperparameters match those reported in the ICAIF paper.
+
+# --- Kronos model ---
+model:
+  name: "Kronos-base"
+  config_path: "models/Kronos-base/config.json"
+  weights_path: "models/Kronos-base/model.safetensors"
+  tokenizer_path: "models/Kronos-Tokenizer-base"
+  layer: 6            # residual stream extraction layer
+  d_model: 832        # hidden dimension (read from config.json at runtime)
+
+# --- Data ---
+data:
+  root: "data/scale120"
+  n_stocks: 120
+  columns: ["open", "close", "high", "low", "volume", "amount"]
+
+# --- Windowing ---
+window:
+  length: 64           # K-line periods per window
+  stride: 32           # sliding window stride
+
+# --- Train / val / test splits (chronological) ---
+split:
+  train: 0.6
+  val: 0.1             # purge gap; not used for SAE training
+  # test = 1 - train - val = 0.3
+
+# --- SAE architecture ---
+sae:
+  k: 64                # top-K active features per sample
+  expansion: 4         # expansion factor: d_hidden = d_model * expansion
+  # d_hidden = 832 * 4 = 3328
+
+# --- SAE training ---
+training:
+  steps: 3000          # per-stock SAE training steps
+  steps_shared: 5000   # shared SAE training steps
+  batch_size: 256      # per-stock SAE batch size
+  batch_size_shared: 512  # shared SAE batch size
+  lr: 1.0e-4           # Adam learning rate
+  weight_decay: 0.0
+  grad_clip: 1.0
+  seed: 42
+
+# --- Concept labeling ---
+labeling:
+  pre_cal_threshold: 0.15    # Tier-1: |r| > 0.15
+  tier2_thresholds: [0.35, 0.50]
+  null_shuffles: 100         # permutation null calibration
+  block_size: 10             # block-permutation block size (windows)
+  min_active_samples: 5      # minimum nonzero activations for correlation
+
+# --- Ablation ---
+ablation:
+  top_k_features: 50         # number of most-active features to ablate
+  dose_response_ks: [10, 20, 50, 100]
+
+# --- Sensitivity analysis ---
+sensitivity:
+  k_values: [32, 64, 128]
+  expansion_values: [2, 4, 8]
+  n_stocks: 30               # stocks used for sensitivity experiments
+
+# --- Financial validation ---
+financial:
+  n_stocks: 30               # stocks used for financial metric validation
+  n_bootstrap: 10000         # bootstrap resamples for CIs
+
+# --- Normalization ---
+normalization:
+  clip_range: [-5.0, 5.0]
+  epsilon: 1.0e-5
+
+# --- Paths (relative to project root; override via CLI or env) ---
+paths:
+  output_dir: "outputs"
+  figures_dir: "figures"
+  activations_dir: "outputs/activations"
+  sae_dir: "outputs/sae"
+  results_dir: "outputs/results"
+
+# --- Device ---
+device: "cuda:0"

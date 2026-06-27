@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+outputs/
+*.egg-info/
+.eggs/
+dist/
+build/
+*.npy
+*.pt
+*.safetensors
+.DS_Store
