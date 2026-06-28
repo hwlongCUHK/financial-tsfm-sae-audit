@@ -1,15 +1,17 @@
-# Interpreting Financial Time-Series Foundation Models with Sparse Autoencoders
+# Auditing Financial Time-Series Foundation Models with Statistics-Grounded Sparse Features
 
-Code repository for the ICAIF paper: *Interpreting Financial Time-Series Foundation Models with Sparse Autoencoders: An Empirical Audit of Kronos*.
+Code repository for the ICAIF 2026 paper: *Auditing Financial Time-Series Foundation Models with Statistics-Grounded Sparse Features*.
+
+> **Status**: Under review at the 5th ACM International Conference on AI in Finance (ICAIF 2026). The paper is currently in the review stage; code is provided for reproducibility.
 
 ## Abstract
 
-We apply sparse autoencoders (SAEs) to audit the internal representations of Kronos, a pretrained financial time-series transformer. Training TopK SAEs on layer-6 residual stream activations from 120 Chinese A-share stocks, we find that Kronos encodes a broad ecology of basic financial signals -- momentum, volatility, autocorrelation, tail risk, price structure, and volume -- with no single signal dominating (largest concept family < 9% of assignments across 16 families). Intervention experiments (ablation and permutation) confirm that concept-labeled features carry structured financial information beyond activation frequency. Ablation increases prediction volatility by 23% while preserving directional structure, and the concept distribution is robust to SAE hyperparameters, random seeds, and layer choice.
+Financial time-series foundation models are increasingly deployed in high-stakes applications, yet their internal representations remain opaque. We introduce a reproducible audit protocol that decomposes a financial TSFM's activations using sparse autoencoders (SAEs) and labels the resulting features by correlation with precisely defined financial statistics (momentum, volatility, autocorrelation, tail risk, and volume), using a curated dictionary of 30+ measures to which features are assigned by maximum correlation. Applying this protocol to Kronos (12B K-line records, 120 Chinese A-share stocks), we find that the model's internal concept distribution is remarkably flat: under Tier-1 exploratory labeling ($|r| > 0.15$), 16 concept families are identified with no single family dominating. Ablation experiments confirm that these features measurably affect predictions, primarily by stabilizing output volatility ($+23\%$), with no single concept family dominating prediction responsibility. These findings suggest that effective auditing of financial TSFMs must characterize the full feature ecology, not just a handful of dominant factors. We release the protocol and code as a reusable transparency tool.
 
 ## Project Structure
 
 ```
-code/
+.
 ├── README.md                           # This file
 ├── requirements.txt                    # Python dependencies
 ├── configs/
@@ -129,8 +131,8 @@ All hyperparameters are defined in `configs/default.yaml`:
 ## Citation
 
 ```bibtex
-@inproceedings{hou2026interpreting,
-  title={Interpreting Financial Time-Series Foundation Models with Sparse Autoencoders: An Empirical Audit of Kronos},
+@inproceedings{hou2026auditing,
+  title={Auditing Financial Time-Series Foundation Models with Statistics-Grounded Sparse Features},
   author={Hou, Wanlong and others},
   booktitle={Proceedings of the 5th ACM International Conference on AI in Finance (ICAIF)},
   year={2026}
