@@ -1,5 +1,5 @@
 """LLM auto-interpretability: use DeepSeek to label SAE features with financial concepts."""
-import torch, numpy as np, json, sys, time
+import torch, numpy as np, json, sys, time, os
 from pathlib import Path
 sys.path.insert(0, "/data/houwanlong/finllm-mi/code")
 from model.kronos import Kronos, KronosTokenizer
@@ -7,7 +7,7 @@ from safetensors.torch import load_file
 import pandas as pd
 from openai import OpenAI
 
-API_KEY = "sk-ca6f57ac52fd4d4cbbb12d583ff68f82"
+API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
 LAYERS = [0, 3, 6, 9, 11]
 DEVICE = "cuda:0"
 SAE_DIR = "/data/houwanlong/finllm-mi/outputs/sae"
